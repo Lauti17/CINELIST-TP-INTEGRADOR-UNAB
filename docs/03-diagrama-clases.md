@@ -1,6 +1,6 @@
 # Diagrama de clases
 
-> Actualizado en TP1 con la implementación de la v1.
+
 
 ```mermaid
 classDiagram

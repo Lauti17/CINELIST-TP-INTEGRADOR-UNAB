@@ -1,0 +1,4 @@
+# El proyecto funciona solo con librería estándar de Python (json, unittest).
+# Sumar acá las librerías auxiliares que se usen más adelante, por ejemplo:
+# pytest
+# matplotlib
