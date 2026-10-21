@@ -1,6 +1,6 @@
 class NodoArbol:
     def __init__(self, clave, valor):
-        self.clave = clave.lower()  # Normalizamos a minúsculas para buscar sin problemas
+        self.clave = clave.lower()
         self.valor = valor
         self.izquierdo = None
         self.derecho = None
@@ -39,3 +39,41 @@ class ArbolBST:
         if clave_lower < nodo.clave:
             return self._buscar_recursivo(nodo.izquierdo, clave_lower)
         return self._buscar_recursivo(nodo.derecho, clave_lower)
+
+    # --- RECORRIDOS OBLIGATORIOS ---
+
+    def inorder(self) -> list:
+        """Devuelve los elementos ordenados alfabéticamente (Izquierda, Raíz, Derecha)."""
+        resultado = []
+        self._inorder_recursivo(self.raiz, resultado)
+        return resultado
+
+    def _inorder_recursivo(self, nodo: NodoArbol, resultado: list):
+        if nodo:
+            self._inorder_recursivo(nodo.izquierdo, resultado)
+            resultado.append(nodo.valor)
+            self._inorder_recursivo(nodo.derecho, resultado)
+
+    def preorder(self) -> list:
+        """Recorrido Raíz, Izquierda, Derecha."""
+        resultado = []
+        self._preorder_recursivo(self.raiz, resultado)
+        return resultado
+
+    def _preorder_recursivo(self, nodo: NodoArbol, resultado: list):
+        if nodo:
+            resultado.append(nodo.valor)
+            self._preorder_recursivo(nodo.izquierdo, resultado)
+            self._preorder_recursivo(nodo.derecho, resultado)
+
+    def postorder(self) -> list:
+        """Recorrido Izquierda, Derecha, Raíz."""
+        resultado = []
+        self._postorder_recursivo(self.raiz, resultado)
+        return resultado
+
+    def _postorder_recursivo(self, nodo: NodoArbol, resultado: list):
+        if nodo:
+            self._postorder_recursivo(nodo.izquierdo, resultado)
+            self._postorder_recursivo(nodo.derecho, resultado)
+            resultado.append(nodo.valor)

@@ -88,4 +88,4 @@ python3 -m unittest discover tests    # macOS / Linux
 
 ## Estado del proyecto
 
-#tp 0, tp1, tp2
+#tp 0, tp1, tp2, tp3, tp4, tp5, tp6 

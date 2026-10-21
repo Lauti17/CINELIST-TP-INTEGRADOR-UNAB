@@ -1,4 +1,6 @@
 from servicios.catalogo import Catalogo
+from servicios.categorias import GestorCategorias
+from servicios.recomendador import Recomendador
 
 
 class Terminal:
@@ -6,6 +8,7 @@ class Terminal:
 
     def __init__(self, catalogo: Catalogo) -> None:
         self._catalogo = catalogo
+        self._gestor_categorias = GestorCategorias()
 
     def iniciar(self) -> None:
         while True:
@@ -18,6 +21,10 @@ class Terminal:
                 self._listar()
             elif opcion == "3":
                 self._filtrar()
+            elif opcion == "4":
+                self._explorar_categorias()
+            elif opcion == "5":
+                self._mostrar_top_n()
             elif opcion == "0":
                 print("¡Hasta la próxima!")
                 break
@@ -27,11 +34,13 @@ class Terminal:
 
     def _mostrar_menu(self) -> None:
         print("=" * 40)
-        print(" 🎬 CINELILIST — TERMINAL (v1)")
+        print(" 🎬 CINELILIST — TERMINAL")
         print("=" * 40)
-        print("1. Buscar elemento")
-        print("2. Listar todos los elementos")
+        print("1. Buscar película")
+        print("2. Listar todas las películas")
         print("3. Filtrar por categoría")
+        print("4. Explorar categorías")
+        print("5. Ver Top N películas")
         print("0. Salir")
         print("-" * 40)
 
@@ -55,3 +64,21 @@ class Terminal:
                 print(f"- {pelicula}")
         else:
             print(f"No hay elementos en '{genero}'.")
+
+    def _explorar_categorias(self) -> None:
+        print("\n--- JERARQUÍA DE CATEGORÍAS ---")
+        print(self._gestor_categorias.obtener_arbol_visual())
+
+    def _mostrar_top_n(self) -> None:
+        try:
+            val = input("¿Cuántas películas querés ver en el Top?: ").strip()
+            n = int(val) if val else 5
+        except ValueError:
+            n = 5
+
+        recomendador = Recomendador(self._catalogo.listar())
+        top_peliculas = recomendador.obtener_top_n(n)
+
+        print(f"\n--- TOP {n} PELÍCULAS MEJOR VALORADAS ---")
+        for idx, p in enumerate(top_peliculas, 1):
+            print(f"{idx}. {p.titulo:<25} | Rating: {p.rating}")
