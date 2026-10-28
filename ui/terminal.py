@@ -1,6 +1,7 @@
 from servicios.catalogo import Catalogo
 from servicios.categorias import GestorCategorias
 from servicios.recomendador import Recomendador
+from servicios.relaciones import Relaciones
 
 
 class Terminal:
@@ -9,6 +10,7 @@ class Terminal:
     def __init__(self, catalogo: Catalogo) -> None:
         self._catalogo = catalogo
         self._gestor_categorias = GestorCategorias()
+        self._relaciones: Relaciones | None = None  # el grafo se arma la primera vez que se usa
 
     def iniciar(self) -> None:
         while True:
@@ -25,6 +27,8 @@ class Terminal:
                 self._explorar_categorias()
             elif opcion == "5":
                 self._mostrar_top_n()
+            elif opcion == "6":
+                self._mostrar_relacionadas()
             elif opcion == "0":
                 print("¡Hasta la próxima!")
                 break
@@ -41,6 +45,7 @@ class Terminal:
         print("3. Filtrar por categoría")
         print("4. Explorar categorías")
         print("5. Ver Top N películas")
+        print("6. Ver películas relacionadas")
         print("0. Salir")
         print("-" * 40)
 
@@ -82,3 +87,22 @@ class Terminal:
         print(f"\n--- TOP {n} PELÍCULAS MEJOR VALORADAS ---")
         for idx, p in enumerate(top_peliculas, 1):
             print(f"{idx}. {p.titulo:<25} | Rating: {p.rating}")
+
+    def _mostrar_relacionadas(self) -> None:
+        titulo = input("Título de la película: ").strip()
+        pelicula = self._catalogo.buscar(titulo)
+        if pelicula is None:
+            print(f"No encontramos '{titulo}'.")
+            return
+
+        if self._relaciones is None:
+            self._relaciones = Relaciones(self._catalogo.listar())
+
+        relacionadas = self._relaciones.relacionadas(pelicula.titulo)
+        if not relacionadas:
+            print(f"'{pelicula.titulo}' no tiene películas relacionadas.")
+            return
+
+        print(f"\n--- Si te gustó {pelicula.titulo} ({pelicula.director}), mirá también ---")
+        for p, motivo in relacionadas:
+            print(f"- {p.titulo:<35} ⭐{p.rating}  ({motivo})")
