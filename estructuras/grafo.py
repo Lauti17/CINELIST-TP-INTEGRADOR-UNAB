@@ -39,6 +39,10 @@ class Grafo:
         self._adyacencia[ka][kb] = peso
         self._adyacencia[kb][ka] = peso
 
+    def normalizar(self, clave: str) -> str:
+        """Devuelve la clave tal como se guarda internamente (en minúsculas)."""
+        return self._clave(clave)
+
     def existe(self, clave: str) -> bool:
         return self._clave(clave) in self._valores
 

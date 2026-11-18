@@ -29,6 +29,12 @@ class Terminal:
                 self._mostrar_top_n()
             elif opcion == "6":
                 self._mostrar_relacionadas()
+            elif opcion == "7":
+                self._mostrar_camino_mas_corto()
+            elif opcion == "8":
+                self._mostrar_mas_cercana_de_otro_genero()
+            elif opcion == "9":
+                self._explorar_en_profundidad()
             elif opcion == "0":
                 print("¡Hasta la próxima!")
                 break
@@ -46,6 +52,9 @@ class Terminal:
         print("4. Explorar categorías")
         print("5. Ver Top N películas")
         print("6. Ver películas relacionadas")
+        print("7. Camino más corto entre dos películas")
+        print("8. Película más cercana de otro género")
+        print("9. Explorar todo lo conectado a una película")
         print("0. Salir")
         print("-" * 40)
 
@@ -95,10 +104,7 @@ class Terminal:
             print(f"No encontramos '{titulo}'.")
             return
 
-        if self._relaciones is None:
-            self._relaciones = Relaciones(self._catalogo.listar())
-
-        relacionadas = self._relaciones.relacionadas(pelicula.titulo)
+        relacionadas = self._obtener_relaciones().relacionadas(pelicula.titulo)
         if not relacionadas:
             print(f"'{pelicula.titulo}' no tiene películas relacionadas.")
             return
@@ -106,3 +112,65 @@ class Terminal:
         print(f"\n--- Si te gustó {pelicula.titulo} ({pelicula.director}), mirá también ---")
         for p, motivo in relacionadas:
             print(f"- {p.titulo:<35} ⭐{p.rating}  ({motivo})")
+
+    def _obtener_relaciones(self) -> Relaciones:
+        """Arma el grafo la primera vez que hace falta y lo reutiliza."""
+        if self._relaciones is None:
+            self._relaciones = Relaciones(self._catalogo.listar())
+        return self._relaciones
+
+    def _pedir_pelicula(self, mensaje: str):
+        titulo = input(mensaje).strip()
+        pelicula = self._catalogo.buscar(titulo)
+        if pelicula is None:
+            print(f"No encontramos '{titulo}'.")
+        return pelicula
+
+    def _imprimir_camino(self, camino) -> None:
+        motivos = Relaciones.motivos_del_camino(camino)
+        print(f"  {camino[0].titulo}")
+        for pelicula, motivo in zip(camino[1:], motivos):
+            print(f"   → {pelicula.titulo}  ({motivo})")
+
+    def _mostrar_camino_mas_corto(self) -> None:
+        origen = self._pedir_pelicula("Película de origen: ")
+        if origen is None:
+            return
+        destino = self._pedir_pelicula("Película de destino: ")
+        if destino is None:
+            return
+        if origen is destino:
+            print("Elegiste la misma película dos veces.")
+            return
+
+        camino = self._obtener_relaciones().camino_mas_corto(origen.titulo, destino.titulo)
+        if camino is None:
+            print(f"\nNo existe camino entre '{origen.titulo}' y '{destino.titulo}': "
+                  "ninguna cadena de películas relacionadas las une.")
+            return
+        print(f"\n--- Camino más corto: {len(camino) - 1} conexiones ---")
+        self._imprimir_camino(camino)
+
+    def _mostrar_mas_cercana_de_otro_genero(self) -> None:
+        origen = self._pedir_pelicula("Título de la película: ")
+        if origen is None:
+            return
+        camino = self._obtener_relaciones().mas_cercana_de_otro_genero(origen.titulo)
+        if camino is None:
+            print(f"\nNinguna película de otro género está conectada con '{origen.titulo}'.")
+            return
+        destino = camino[-1]
+        print(f"\n--- La más cercana de otro género a {origen.titulo} ({origen.genero}) ---")
+        self._imprimir_camino(camino)
+        print(f"\nRecomendada: {destino.titulo} ({destino.genero}) ⭐{destino.rating}, "
+              f"a {len(camino) - 1} conexiones.")
+
+    def _explorar_en_profundidad(self) -> None:
+        origen = self._pedir_pelicula("Película de partida: ")
+        if origen is None:
+            return
+        recorrido = self._obtener_relaciones().explorar_en_profundidad(origen.titulo)[1:]
+        print(f"\n--- Todo lo conectado con {origen.titulo}, explorado en profundidad ---")
+        for numero, pelicula in enumerate(recorrido, start=1):
+            print(f"{numero:>3}. {pelicula.titulo:<35} {pelicula.genero}")
+        print(f"\nAlcanzables: {len(recorrido)} de {len(self._catalogo) - 1} películas.")

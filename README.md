@@ -21,8 +21,8 @@ python3 --version   # macOS / Linux
 ## Instalación
 
 ```bash
-git clone #(url del git)
-cd cinelilist
+git clone https://github.com/Lauti17/CINELIST-TP-INTEGRADOR-UNAB.git
+cd CINELIST-TP-INTEGRADOR-UNAB
 ```
 
 ### Entorno virtual (recomendado)
@@ -65,14 +65,27 @@ python -m unittest discover tests     # Windows
 python3 -m unittest discover tests    # macOS / Linux
 ```
 
+## Experimentos
+
+```bash
+python algoritmos/experimentos/medicion.py   # TP2: secuencial vs binaria vs BST
+python experimento_avl.py                    # TP4: BST desbalanceado vs AVL
+python algoritmos/experimentos/medicion_recorridos.py   # TP8: BFS vs DFS
+python experimentos.py                       # comparación rápida secuencial vs árbol
+```
+
+El gráfico del TP2 requiere `matplotlib` (`pip install matplotlib`); sin él, el
+script imprime igual la tabla. Los datasets sintéticos se generan solos con
+`datos/generar.py`.
+
 ## Estructura del repositorio
 
 | Carpeta | Contenido |
 |---|---|
 | `modelos/` | Clases del dominio (`Pelicula`) |
-| `estructuras/` | Estr. de datos implementadas (BST, AVL, Heap, Grafo) |
-| `algoritmos/` | Búsquedas, BFS/DFS, caminos mínimos |
-| `datos/` | Datasets de prueba (JSON) |
+| `estructuras/` | Estructuras de datos: BST, AVL, árbol N-ario, heap y grafo |
+| `algoritmos/` | BFS y DFS, y experimentos de medición (`experimentos/`); caminos mínimos (pendiente) |
+| `datos/` | Dataset real (`peliculas.json`) y generador de datasets sintéticos (`generar.py`) |
 | `servicios/` | Lógica de negocio (`Catalogo`, recomendador) |
 | `ui/` | Interfaz de terminal |
 | `tests/` | Pruebas |
@@ -85,7 +98,23 @@ python3 -m unittest discover tests    # macOS / Linux
 - [Diagrama de clases](docs/03-diagrama-clases.md)
 - [Conexión entre estructuras](docs/04-diagrama-datos.md)
 - [Gestión del proyecto](docs/05-gestion-proyecto.md)
+- [Informe TP2: análisis de complejidad](docs/tp2-experimentos.md)
+- [TP7: grafo de relaciones](docs/tp7-grafo.md)
+- [TP8: recorridos BFS y DFS](docs/tp8-recorridos.md)
+- [Guía del Demo Day](docs/06-guia-demo-day.md)
 
 ## Estado del proyecto
 
-#tp 0, tp1, tp2, tp3, tp4, tp5, tp6 
+| TP | Tema | Estado |
+|---|---|---|
+| TP0 | Lanzamiento | ✅ |
+| TP1 | Objetos y clases | ✅ |
+| TP2 | Análisis de algoritmos | ✅ |
+| TP3 | Árbol binario de búsqueda | ✅ |
+| TP4 | AVL | ✅ |
+| TP5 | Árbol general (categorías) | ✅ |
+| TP6 | Heap (Top N) | ✅ |
+| TP7 | Grafo | ✅ |
+| TP8 | BFS / DFS | ✅ |
+| TP9 | Caminos mínimos | ⏳ |
+| TP10 | Producto final | ⏳ |
